@@ -52,9 +52,11 @@ def navigate_members_in_a_chapter(chapter_link):
     time.sleep(1)
     member_tab_element.click()
     time.sleep(2)
-
-    rows = driver.find_elements(By.CSS_SELECTOR, "#chapterListTable tbody tr")
-    for row in rows:
+    total_rows = driver.find_elements(By.CSS_SELECTOR, "#chapterListTable tbody tr")
+    row_count = len(total_rows)
+    for i in range(row_count):
+        rows = driver.find_elements(By.CSS_SELECTOR, "#chapterListTable tbody tr")
+        row = rows[i]
         time.sleep(3)
         tds = row.find_elements(By.TAG_NAME, "td")
         if len(tds) >= 3:
