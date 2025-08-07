@@ -75,9 +75,13 @@ def navigate_members_in_a_chapter(chapter_link):
                 "Email": email
             })
             print(data)
-            driver.get(chapter_link)
-            time.sleep(5)
+            driver.back()
+            time.sleep(2)
+            member_tab_element = driver.find_element(By.ID, MEMBERS_TAB)
             driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });",
                                   member_tab_element)
+            time.sleep(2)
+            member_tab_element.click()
+
 
 navigate_members_in_a_chapter("https://bni.ae/en-AE/chapterdetail?chapterId=bnqo86407Crr7QvFAkiJxg%3D%3D&name=BNI+BNI+Gazelles")
