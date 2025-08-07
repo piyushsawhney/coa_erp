@@ -1,0 +1,1 @@
+BNI_UAE_CHAPTER_SEARCH = "https://bni.ae/en-AE/advancedchaptersearch"
