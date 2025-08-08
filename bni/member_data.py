@@ -42,16 +42,18 @@ def get_email_mobile_from_profile():
     mobile = get_mobile_from_profile()
     return mobile,email_link
 
+def navigate_and_click_member_tab():
+    MEMBERS_TAB = "members_tab"
+    time.sleep(2)
+    member_tab_element = driver.find_element(By.ID, MEMBERS_TAB)
+    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });",
+                          member_tab_element)
+    time.sleep(2)
+    member_tab_element.click()
 
 def navigate_members_in_a_chapter(chapter_link):
     driver.get(chapter_link)
-    time.sleep(2)
-    MEMBERS_TAB = "members_tab"
-    member_tab_element = driver.find_element(By.ID, MEMBERS_TAB)
-    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", member_tab_element)
-    time.sleep(1)
-    member_tab_element.click()
-    time.sleep(2)
+    navigate_and_click_member_tab()
     total_rows = driver.find_elements(By.CSS_SELECTOR, "#chapterListTable tbody tr")
     row_count = len(total_rows)
     for i in range(row_count):
@@ -78,12 +80,8 @@ def navigate_members_in_a_chapter(chapter_link):
             })
             print(data)
             driver.back()
-            time.sleep(2)
-            member_tab_element = driver.find_element(By.ID, MEMBERS_TAB)
-            driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });",
-                                  member_tab_element)
-            time.sleep(2)
-            member_tab_element.click()
+            navigate_and_click_member_tab()
+
 
 
 navigate_members_in_a_chapter("https://bni.ae/en-AE/chapterdetail?chapterId=bnqo86407Crr7QvFAkiJxg%3D%3D&name=BNI+BNI+Gazelles")
