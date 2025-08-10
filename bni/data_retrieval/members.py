@@ -62,7 +62,6 @@ def get_members_details(chapter_link):
     if not rows:
         return None
     for index, row in enumerate(rows):
-        # driver.execute_script("window.scrollBy(0, 100);")
         if index != 0 and index % 50 == 0:
             navigate_pagination()
             time.sleep(2)
@@ -72,7 +71,7 @@ def get_members_details(chapter_link):
             continue  # skip malformed rows
         name_elem = cols[0].find_element(By.TAG_NAME, "a")
         member_name = name_elem.text.strip()
-        print(f"Member Name: {member_name}, Chapter Link: {chapter_link}")
+        print(f"Index: {index}, Member Name: {member_name}, Chapter Link: {chapter_link}")
         profile_link = name_elem.get_attribute("href")
         company_name = cols[1].text.strip()
         profession = cols[2].text.strip()
