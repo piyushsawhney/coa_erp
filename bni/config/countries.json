@@ -1,0 +1,13 @@
+{
+  "UAE" : {
+    "country_url" : "https://bni.ae/en-AE/",
+    "country_name" : "United Arab Emirates",
+    "country_id": "1138"
+  },
+  "IN":
+  {
+    "country_url" : "https://bni-india.in/en-IN/",
+    "country_name" : "India",
+    "country_id": "3857"
+  }
+}
