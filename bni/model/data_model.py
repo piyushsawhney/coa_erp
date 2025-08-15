@@ -30,7 +30,7 @@ class Region(Base):
         ForeignKey("countries.country_code", ondelete="CASCADE"),
         nullable=False
     )
-    region_name = Column(String(100), nullable=False)
+    region_name = Column(String(255), nullable=False)
 
     # Relationships
     country = relationship("Country", back_populates="regions")
@@ -45,13 +45,13 @@ class Region(Base):
 class Chapter(Base):
     __tablename__ = "chapters"
 
-    chapter_code = Column(String(20), primary_key=True)
+    chapter_code = Column(String(255), primary_key=True)
     region_code = Column(
         String(20),
         ForeignKey("regions.region_code", ondelete="CASCADE"),
         nullable=False
     )
-    chapter_name = Column(String(100), nullable=False)
+    chapter_name = Column(String(255), nullable=False)
     chapter_link = Column(String(255), nullable=False)
 
     # Relationships
@@ -67,15 +67,15 @@ class Chapter(Base):
 class Member(Base):
     __tablename__ = "members"
 
-    member_id = Column(String(50), primary_key=True)
+    member_id = Column(String(255), primary_key=True)
     chapter_code = Column(
-        String(20),
+        String(255),
         ForeignKey("chapters.chapter_code", ondelete="CASCADE"),
         nullable=False
     )
     member_profile_link = Column(String(255), nullable=False)
-    name = Column(String(100), nullable=False)
-    company = Column(String(100))
+    name = Column(String(255), nullable=False)
+    company = Column(String(255))
     designation = Column(Text)
     email_urls = Column(String(255))
     mobile = Column(String(50))

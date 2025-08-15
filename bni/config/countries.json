@@ -15,5 +15,11 @@
     "country_url" : "https://bniamerica.com/en-US/",
     "country_name" : "United States of America",
     "country_id": "10"
+  },
+  "AU":
+  {
+    "country_url" : "https://events.bni.com.au/en-AU/",
+    "country_name" : "Australia",
+    "country_id": "17809"
   }
 }

@@ -1,5 +1,6 @@
 import time
 from datetime import date
+
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,24 +11,25 @@ from bni.model.data_model import Member
 from bni.setup.selenium_setup import driver
 
 
-def navigate_to_members_tab_and_click(to_click=True):
+def navigate_to_members_tab_and_click(to_scroll=True):
+    time.sleep(1)
     member_tab_id = "members_tab"
     member_tab_element = WebDriverWait(
         driver,
-        timeout=15,
+        timeout=20,
         poll_frequency=1,
         ignored_exceptions=[NoSuchElementException]
     ).until(EC.visibility_of_element_located((By.ID, member_tab_id)))
-    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", member_tab_element)
-    driver.execute_script("window.scrollBy(0, 800);")
+    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'instant', block: 'center' });", member_tab_element)
+    # if to_scroll:
+    #     driver.execute_script("window.scrollBy(0, 400);")
     member_tab_button = WebDriverWait(
         driver,
-        timeout=15,
+        timeout=20,
         poll_frequency=1,
         ignored_exceptions=[NoSuchElementException]
     ).until(EC.element_to_be_clickable((By.ID, member_tab_id)))
-    if to_click:
-        member_tab_button.click()
+    member_tab_button.click()
 
 
 def navigate_pagination():
@@ -67,8 +69,6 @@ def get_members_details(chapter_link):
             time.sleep(2)
             render_table()
         cols = row.find_elements(By.TAG_NAME, "td")
-        if len(cols) < 1:
-            continue  # skip malformed rows
         name_elem = cols[0].find_element(By.TAG_NAME, "a")
         member_name = name_elem.text.strip()
         print(f"Index: {index}, Member Name: {member_name}, Chapter Link: {chapter_link}")
@@ -160,7 +160,7 @@ def check_redirection(country_url):
         return False
 
 
-def get_member_contact(country_url,profile_link):
+def get_member_contact(country_url, profile_link):
     print(profile_link)
     driver.get(profile_link)
     if check_redirection(country_url):

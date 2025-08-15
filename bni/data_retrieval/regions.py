@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from bni.db.db import session
-from bni.model.data_model import Country, Region
+from bni.model.data_model import Region
 from bni.setup.selenium_setup import driver
 
 
@@ -27,6 +27,7 @@ def get_country_regions(country_url, country_code):
     for option in dropdown.options[1:]:
         region_code = option.get_attribute("value")
         region_name = option.text.strip()
+        print(f"Region Name: {region_name}, Region Code: {region_code}")
         if not region_code:  # skip invalid
             continue
         region_codes.add(region_code)

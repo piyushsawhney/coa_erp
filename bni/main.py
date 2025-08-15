@@ -20,7 +20,8 @@ if __name__ == '__main__':
         for region_code in region_codes:
             chapter_links = get_region_chapters(country.country_url, country.country_id, region_code)
             if chapter_links:
-                for chapter_link in chapter_links:
+                for index,chapter_link in enumerate(chapter_links):
+                    print(f"Index: {index}, Country : {country_code}, Region: {region_code}, Chapter : {chapter_link}")
                     get_chapter_members(chapter_link)
     elif option == '2':
         six_months_ago = date.today() - timedelta(days=6 * 30)  # approx. 6 months
