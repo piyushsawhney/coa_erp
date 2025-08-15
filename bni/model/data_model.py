@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, ForeignKey, Text
+from sqlalchemy import Column, String, ForeignKey, Text, Date, func
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -53,6 +53,6 @@ class Member(Base):
     email_urls = Column(String(255))
     mobile = Column(String(50))
     phone = Column(String(50))
-
+    updated_date = Column(Date)  # DB default
     # Relationships
     chapter = relationship("Chapter", back_populates="members")

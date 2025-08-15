@@ -7,9 +7,9 @@ from bni.model.data_model import Chapter
 from bni.setup.selenium_setup import driver
 
 
-def get_region_chapters(country_id, region_code):
+def get_region_chapters(country_url,country_id, region_code):
     print(f"{country_id}/{region_code}")
-    navigation_url = f"https://bni.ae/en-AE/chapterlist?countryIds={country_id}&regionId={region_code}&chapterName=&chapterCity=&chapterArea=&chapterMeetingDay=&chapterMeetingTime=&chapterMeetingType="
+    navigation_url = f"{country_url}chapterlist?countryIds={country_id}&regionId={region_code}&chapterName=&chapterCity=&chapterArea=&chapterMeetingDay=&chapterMeetingTime=&chapterMeetingType="
     driver.get(navigation_url)
     # navigate_to_members_tab_and_click()
     wait = WebDriverWait(driver, 15, poll_frequency=1, ignored_exceptions=[NoSuchElementException])

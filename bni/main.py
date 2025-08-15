@@ -1,3 +1,7 @@
+from datetime import timedelta, date
+
+from sqlalchemy import or_
+
 from bni.data_retrieval.chapters import get_region_chapters
 from bni.data_retrieval.members import get_chapter_members, get_member_contact
 from bni.data_retrieval.regions import get_country_regions
@@ -10,24 +14,31 @@ if __name__ == '__main__':
     country_code = input("Enter country code: ").strip().upper()
     option = input(
         "Enter 1/2:\n1. Retrieve Member list for a country\n2. Load member contacts in database\n").strip().upper()
+    country = session.query(Country).filter_by(country_code=country_code).first()
     if option == '1':
-        country = session.query(Country).filter_by(country_code=country_code).first()
         region_codes = get_country_regions(country.country_url, country.country_code)
         for region_code in region_codes:
-            chapter_links = get_region_chapters(country.country_id, region_code)
+            chapter_links = get_region_chapters(country.country_url, country.country_id, region_code)
             if chapter_links:
                 for chapter_link in chapter_links:
                     get_chapter_members(chapter_link)
     elif option == '2':
+        six_months_ago = date.today() - timedelta(days=6 * 30)  # approx. 6 months
         members_in_country = (
             session.query(Member)
             .join(Member.chapter)
             .join(Chapter.region)
             .join(Region.country)
             .filter(Country.country_code == country_code)
+            .filter(
+                or_(
+                    Member.updated_date < six_months_ago,
+                    Member.updated_date.is_(None)
+                )
+            )
             .all()
         )
         for member in members_in_country:
-            get_member_contact(member.member_profile_link)
+            get_member_contact(country.country_url, member.member_profile_link)
     else:
         print("Invalid option. Exiting...")

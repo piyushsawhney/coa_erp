@@ -9,5 +9,11 @@
     "country_url" : "https://bni-india.in/en-IN/",
     "country_name" : "India",
     "country_id": "3857"
+  },
+  "USA":
+  {
+    "country_url" : "https://bniamerica.com/en-US/",
+    "country_name" : "United States of America",
+    "country_id": "10"
   }
 }

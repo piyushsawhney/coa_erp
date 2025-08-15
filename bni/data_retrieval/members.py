@@ -1,5 +1,5 @@
 import time
-
+from datetime import date
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -67,7 +67,7 @@ def get_members_details(chapter_link):
             time.sleep(2)
             render_table()
         cols = row.find_elements(By.TAG_NAME, "td")
-        if len(cols) < 3:
+        if len(cols) < 1:
             continue  # skip malformed rows
         name_elem = cols[0].find_element(By.TAG_NAME, "a")
         member_name = name_elem.text.strip()
@@ -84,14 +84,14 @@ def get_members_details(chapter_link):
             existing.member_profile_link = profile_link
             existing.chapter_code = chapter_link
         else:
-            new_chapter = Member(
+            new_member = Member(
                 member_id=member_id,
                 chapter_code=chapter_link,
                 member_profile_link=profile_link,
                 name=member_name,
                 company=company_name,
                 designation=profession)
-            session.add(new_chapter)
+            session.add(new_member)
     session.commit()
 
 
@@ -147,12 +147,30 @@ def get_email_link_from_profile():
     return email_link
 
 
-def get_member_contact(profile_link):
+def check_redirection(country_url):
+    """Wait until Chrome redirects to target_url, then return True/False."""
+    try:
+        WebDriverWait(
+            driver,
+            timeout=3,
+            poll_frequency=0.5,
+        ).until(EC.url_to_be(f"{country_url}index"))
+        return True
+    except:
+        return False
+
+
+def get_member_contact(country_url,profile_link):
+    print(profile_link)
     driver.get(profile_link)
+    if check_redirection(country_url):
+        return
     phone1, phone2, email_link = get_email_mobile_from_profile()
+    today = date.today()
     session.query(Member).filter_by(member_id=profile_link).update({
         Member.phone: phone2,
         Member.mobile: phone1,
-        Member.email_urls: email_link
+        Member.email_urls: email_link,
+        Member.updated_date: today
     })
     session.commit()
