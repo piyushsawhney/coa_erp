@@ -74,7 +74,7 @@ class Member(Base):
         nullable=False
     )
     member_profile_link = Column(String(255), nullable=False)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=True)
     company = Column(String(255))
     designation = Column(Text)
     email_urls = Column(String(255))
