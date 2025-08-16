@@ -96,10 +96,13 @@ def get_email_mobile_from_profile():
     return phone1, phone2, email_link
 
 
-def get_member_details(country_url, member_link):
+def get_member_details(country_url, member_link, member):
     print(f"Getting Member Details for {member_link}")
     driver.get(member_link)
     if check_redirection(country_url):
+        print(f"Deleting Member {member_link}")
+        session.delete(member)
+        session.commit()
         return
     profile = WebDriverWait(
         driver,

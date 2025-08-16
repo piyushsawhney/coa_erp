@@ -27,5 +27,5 @@ if __name__ == '__main__':
         members_in_country = get_members_from_db()
         for member in members_in_country:
             country = member.chapter.region.country
-            get_member_details(country.country_url, member.member_profile_link)
+            get_member_details(country.country_url, member.member_profile_link, member)
         members_left = len(members_in_country)
