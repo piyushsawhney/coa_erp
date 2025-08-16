@@ -59,25 +59,22 @@ def render_table():
     return driver.find_elements(By.CSS_SELECTOR, "#chapterListTable tbody tr[role='row']")
 
 
-def get_members_details(chapter_link):
-    rows = render_table()
-    if not rows:
+def get_members_details_new(chapter_link):
+    data_rows = render_table()
+    if not data_rows:
         return None
-    for index, row in enumerate(rows):
+    for index, row in enumerate(data_rows):
         if index != 0 and index % 50 == 0:
             navigate_pagination()
-            time.sleep(2)
+            time.sleep(1)
             render_table()
-        cols = row.find_elements(By.TAG_NAME, "td")
-        name_elem = cols[0].find_element(By.TAG_NAME, "a")
-        member_name = name_elem.text.strip()
+        link_elem = row.find_element(By.CSS_SELECTOR, "a[href*='memberdetails']")
+        profile_link = link_elem.get_attribute("href")
+        member_name = link_elem.text.strip()
+        company_name = row.find_elements(By.TAG_NAME, "td")[1].text.strip()  # second <td>
+        profession = row.find_elements(By.TAG_NAME, "td")[2].text.strip()  # Third <td>
         print(f"Index: {index}, Member Name: {member_name}, Chapter Link: {chapter_link}")
-        profile_link = name_elem.get_attribute("href")
-        company_name = cols[1].text.strip()
-        profession = cols[2].text.strip()
         member_id = profile_link
-
-        # Insert or update in DB
         existing = session.query(Member).filter_by(member_id=member_id).first()
         if existing:
             existing.name = member_name
@@ -94,11 +91,10 @@ def get_members_details(chapter_link):
             session.add(new_member)
     session.commit()
 
-
 def get_chapter_members(chapter_link):
     driver.get(chapter_link)
     navigate_to_members_tab_and_click()
-    get_members_details(chapter_link)
+    return get_members_details_new(chapter_link)
 
 
 def get_email_mobile_from_profile():

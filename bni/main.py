@@ -2,7 +2,7 @@ from datetime import timedelta, date
 
 from sqlalchemy import or_
 
-from bni.data_retrieval.chapters import get_region_chapters
+from bni.data_retrieval.chapters import get_region_chapters_new
 from bni.data_retrieval.members import get_chapter_members, get_member_contact
 from bni.data_retrieval.regions import get_country_regions
 from bni.db.db import session
@@ -18,9 +18,9 @@ if __name__ == '__main__':
     if option == '1':
         region_codes = get_country_regions(country.country_url, country.country_code)
         for region_code in region_codes:
-            chapter_links = get_region_chapters(country.country_url, country.country_id, region_code)
+            chapter_links = get_region_chapters_new(country.country_url, country.country_id, region_code)
             if chapter_links:
-                for index,chapter_link in enumerate(chapter_links):
+                for index, chapter_link in enumerate(chapter_links):
                     print(f"Index: {index}, Country : {country_code}, Region: {region_code}, Chapter : {chapter_link}")
                     get_chapter_members(chapter_link)
     elif option == '2':
