@@ -13,26 +13,15 @@ from bni.setup.selenium_setup import driver
 
 
 def get_chapter_member_ids(chapter_link):
+    has_pagination = True
     driver.get(chapter_link)
     navigate_to_members_tab_and_click()
-    anchors = driver.find_elements(By.CSS_SELECTOR, "#chapterListTable tbody tr[role='row'] a[href*='memberdetails']")
-    total_records = len(anchors)
-    print(f"Total Records {total_records}")
-    page_size = 50
     member_links_set = set()
-    no_of_pages = (total_records + page_size - 1) // page_size  # round up
-    for page_number in range(no_of_pages):
+    while has_pagination:
         anchors = driver.find_elements(By.CSS_SELECTOR,
                                        "#chapterListTable tbody tr[role='row'] a[href*='memberdetails']")
-        print(f"Anchor length {len(anchors)}")
-        start = page_number * page_size
-        end = start + len(anchors)
-        print(f"End: {end}")
-        member_links_set.update(a.get_attribute("href") for a in anchors[0:end] if a.get_attribute("href"))
-        if page_number < no_of_pages - 1:
-            print("Do you even come here")
-            navigate_pagination()
-
+        member_links_set.update(a.get_attribute("href") for a in anchors[0:50] if a.get_attribute("href"))
+        has_pagination = navigate_pagination()
     for index, member_link in enumerate(member_links_set):
         print(f"Index {index}: Member Link: {member_link}, Chapter Link: {chapter_link}")
         existing = session.query(Member).filter_by(member_id=member_link).first()
@@ -46,10 +35,6 @@ def get_chapter_member_ids(chapter_link):
                 member_profile_link=member_link)
             session.add(new_member)
     session.commit()
-
-
-get_chapter_member_ids(
-    "https://bni-india.in/en-IN/chapterdetail?chapterId=CIdUd0WZYJZlFgaixXTtkA%3D%3D&name=BNI+HIGH+FLYER")
 
 
 def get_mobile_from_profile():
@@ -91,7 +76,7 @@ def check_redirection(country_url):
     try:
         WebDriverWait(
             driver,
-            timeout=1,
+            timeout=2,
             poll_frequency=0.5,
         ).until(EC.url_to_be(f"{country_url}index"))
         return True
@@ -112,6 +97,7 @@ def get_email_mobile_from_profile():
 
 
 def get_member_details(country_url, member_link):
+    print(f"Getting Member Details for {member_link}")
     driver.get(member_link)
     if check_redirection(country_url):
         return
@@ -128,6 +114,7 @@ def get_member_details(country_url, member_link):
     member_profession = profile.find_element(By.CSS_SELECTOR, "div.memberProfileInfo h6").text.strip()
     phone1, phone2, email_link = get_email_mobile_from_profile()
     today = date.today()
+    print(member_name)
     session.query(Member).filter_by(member_id=member_link).update({
         Member.name: member_name,
         Member.company: member_company,

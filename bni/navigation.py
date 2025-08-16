@@ -24,16 +24,5 @@ def navigate_pagination():
     if "disabled" not in li_next.get_attribute("class"):
         next_button = li_next.find_element(By.TAG_NAME, "a")
         driver.execute_script("arguments[0].click();", next_button)
-    # next_button = WebDriverWait(
-    #     driver,
-    #     timeout=15,
-    #     poll_frequency=1,
-    #     ignored_exceptions=[NoSuchElementException]
-    # ).until(EC.presence_of_element_located((By.ID, "chapterListTable_next")))
-    # if "disabled" not in next_button.get_attribute("class"):
-    #     next_a = next_button.find_element(By.TAG_NAME, "a")
-    #     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_a)
-    #     time.sleep(2)
-    #     driver.execute_script("window.scrollBy(0, 600);")
-    #     next_a.click()
-    #     driver.execute_script("window.scrollTo({top: 200, behavior: 'smooth'});")
+        return True
+    return False
