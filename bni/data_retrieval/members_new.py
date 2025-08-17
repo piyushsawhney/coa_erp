@@ -65,14 +65,17 @@ def get_mobile_from_profile():
 
 
 def get_email_link_from_profile():
-    a_tag = WebDriverWait(
+    a_tags = WebDriverWait(
         driver,
         timeout=15,
         poll_frequency=0.2,
         ignored_exceptions=[NoSuchElementException]
-    ).until(EC.visibility_of_element_located((By.XPATH, "//a[contains(@href, 'sendmessage')]")))
-    email_link = a_tag.get_attribute("href")
-    return email_link
+    ).until(EC.presence_of_all_elements_located((By.XPATH, "//ul[@class='memberContactInfo']//a")))
+    for a in a_tags:
+        href = a.get_attribute("href")
+        if href and "sendmessage" in href:
+            return href.strip()
+    return None
 
 
 def get_email_mobile_from_profile():
