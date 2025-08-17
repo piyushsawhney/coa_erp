@@ -43,7 +43,7 @@ def get_mobile_from_profile():
     element = WebDriverWait(
         driver,
         timeout=15,
-        poll_frequency=0.5,
+        poll_frequency=0.2,
         ignored_exceptions=[NoSuchElementException]
     ).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.moredots")))
     driver.execute_script("arguments[0].click();", element)
@@ -65,26 +65,20 @@ def get_mobile_from_profile():
 
 
 def get_email_link_from_profile():
-    email_link = None
-    ul_blocks = driver.find_elements(By.CSS_SELECTOR, "ul.memberContactInfo")
-    for ul in ul_blocks:
-        a_tags = ul.find_elements(By.TAG_NAME, "a")
-        for a in a_tags:
-            href = a.get_attribute("href")
-            if href and "sendmessage" in href:
-                return href
+    a_tag = WebDriverWait(
+        driver,
+        timeout=15,
+        poll_frequency=0.2,
+        ignored_exceptions=[NoSuchElementException]
+    ).until(EC.visibility_of_element_located((By.XPATH, "//a[contains(@href, 'sendmessage')]")))
+    email_link = a_tag.get_attribute("href")
     return email_link
 
 
 def get_email_mobile_from_profile():
-    WebDriverWait(
-        driver,
-        timeout=15,
-        poll_frequency=0.5,
-        ignored_exceptions=[NoSuchElementException]
-    ).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.moredots")))
     email_link = get_email_link_from_profile()
     phone1, phone2 = get_mobile_from_profile()
+    print(f"Phone: {phone1}, Phone 2: {phone2}, Email: {email_link}")
     return phone1, phone2, email_link
 
 
@@ -93,7 +87,7 @@ def wait_for_redirect_or_profile(country_url):
     result = WebDriverWait(
         driver,
         timeout=15,
-        poll_frequency=0.5).until(
+        poll_frequency=0.2).until(
         EC.any_of(
             EC.url_to_be(f"{country_url}index"),
             EC.visibility_of_element_located((By.CSS_SELECTOR, "div.memberProfileInfo"))
@@ -115,7 +109,10 @@ def get_member_details(country_url, member_link, member):
         except ObjectDeletedError:
             return
     profile = result
-    member_name = WebDriverWait(driver, 30).until(
+    member_name = WebDriverWait(
+        driver,
+        timeout=15,
+        poll_frequency=0.2).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "div.memberProfileInfo h2"))
     ).text.strip()
     member_company = profile.find_element(By.CSS_SELECTOR, "div.memberProfileInfo p").text.strip()
