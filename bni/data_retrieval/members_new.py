@@ -1,10 +1,10 @@
-import time
 from datetime import date
 
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from sqlalchemy.orm.exc import ObjectDeletedError
 
 from bni.db.db import session
 from bni.model.data_model import Member
@@ -15,7 +15,9 @@ from bni.setup.selenium_setup import driver
 def get_chapter_member_ids(chapter_link):
     has_pagination = True
     driver.get(chapter_link)
-    navigate_to_members_tab_and_click()
+    member_numbers = navigate_to_members_tab_and_click()
+    if member_numbers == 0:
+        return
     member_links_set = set()
     while has_pagination:
         anchors = driver.find_elements(By.CSS_SELECTOR,
@@ -38,10 +40,13 @@ def get_chapter_member_ids(chapter_link):
 
 
 def get_mobile_from_profile():
-    element = driver.find_element(By.CSS_SELECTOR, "a.moredots")
-    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center' });", element)
-    element.click()
-    time.sleep(1)
+    element = WebDriverWait(
+        driver,
+        timeout=15,
+        poll_frequency=0.5,
+        ignored_exceptions=[NoSuchElementException]
+    ).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.moredots")))
+    driver.execute_script("arguments[0].click();", element)
     phone_number = None
     direct_number = None
 
@@ -71,24 +76,11 @@ def get_email_link_from_profile():
     return email_link
 
 
-def check_redirection(country_url):
-    """Wait until Chrome redirects to target_url, then return True/False."""
-    try:
-        WebDriverWait(
-            driver,
-            timeout=2,
-            poll_frequency=0.5,
-        ).until(EC.url_to_be(f"{country_url}index"))
-        return True
-    except:
-        return False
-
-
 def get_email_mobile_from_profile():
     WebDriverWait(
         driver,
         timeout=15,
-        poll_frequency=1,
+        poll_frequency=0.5,
         ignored_exceptions=[NoSuchElementException]
     ).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a.moredots")))
     email_link = get_email_link_from_profile()
@@ -96,20 +88,33 @@ def get_email_mobile_from_profile():
     return phone1, phone2, email_link
 
 
+def wait_for_redirect_or_profile(country_url):
+    """Wait until either redirect happens or profile loads."""
+    result = WebDriverWait(
+        driver,
+        timeout=15,
+        poll_frequency=0.5).until(
+        EC.any_of(
+            EC.url_to_be(f"{country_url}index"),
+            EC.visibility_of_element_located((By.CSS_SELECTOR, "div.memberProfileInfo"))
+        )
+    )
+    return result  # returns True if redirect, WebElement if profile
+
+
 def get_member_details(country_url, member_link, member):
     print(f"Getting Member Details for {member_link}")
     driver.get(member_link)
-    if check_redirection(country_url):
-        print(f"Deleting Member {member_link}")
-        session.delete(member)
-        session.commit()
-        return
-    profile = WebDriverWait(
-        driver,
-        timeout=15,
-        poll_frequency=1,
-        ignored_exceptions=[NoSuchElementException]
-    ).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div.memberProfileInfo")))
+    result = wait_for_redirect_or_profile(country_url)
+    if isinstance(result, bool) and result:
+        try:
+            print(f"Deleting Member {member_link}")
+            session.delete(member)
+            session.commit()
+            return
+        except ObjectDeletedError:
+            return
+    profile = result
     member_name = WebDriverWait(driver, 30).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "div.memberProfileInfo h2"))
     ).text.strip()

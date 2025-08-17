@@ -7,10 +7,17 @@ from bni.setup.selenium_setup import driver
 
 
 def navigate_to_members_tab_and_click(to_scroll=True):
-    members_tab = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "members_tab"))
+    member_number = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "a.numberLink"))
     )
-    driver.execute_script("arguments[0].click();", members_tab)
+    if int(member_number.text.strip()[0]) == 0:
+        return 0
+    else:
+        members_tab = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "members_tab"))
+        )
+        driver.execute_script("arguments[0].click();", members_tab)
+        return 1
 
 
 def navigate_pagination():

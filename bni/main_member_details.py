@@ -1,4 +1,4 @@
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 from bni.data_retrieval.members_new import get_member_details
 from bni.db.db import session
@@ -16,6 +16,7 @@ def get_members_from_db():
             or_(Member.mobile.is_(None), Member.mobile == ""),
             or_(Member.phone.is_(None), Member.phone == "")
         )
+        .order_by(func.random())
         .limit(10)
         .all()
     )

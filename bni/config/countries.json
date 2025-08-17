@@ -1,25 +1,37 @@
 {
-  "UAE" : {
-    "country_url" : "https://bni.ae/en-AE/",
-    "country_name" : "United Arab Emirates",
+  "UAE": {
+    "country_url": "https://bni.ae/en-AE/",
+    "country_name": "United Arab Emirates",
     "country_id": "1138"
   },
-  "IN":
-  {
-    "country_url" : "https://bni-india.in/en-IN/",
-    "country_name" : "India",
+  "IN": {
+    "country_url": "https://bni-india.in/en-IN/",
+    "country_name": "India",
     "country_id": "3857"
   },
-  "USA":
-  {
-    "country_url" : "https://bniamerica.com/en-US/",
-    "country_name" : "United States of America",
+  "USA": {
+    "country_url": "https://bniamerica.com/en-US/",
+    "country_name": "United States of America",
     "country_id": "10"
   },
-  "AU":
-  {
-    "country_url" : "https://events.bni.com.au/en-AU/",
-    "country_name" : "Australia",
+  "AU": {
+    "country_url": "https://events.bni.com.au/en-AU/",
+    "country_name": "Australia",
     "country_id": "17809"
+  },
+  "UK": {
+    "country_url": "https://bni.co.uk/en-GB/",
+    "country_name": "Great Britain",
+    "country_id": "8150"
+  },
+  "CAN": {
+    "country_url": "https://bnicanada.ca/en-CA/",
+    "country_name": "Canada",
+    "country_id": "17114"
+  },
+  "SA": {
+    "country_url": "https://bni.co.za/en-ZA/",
+    "country_name": "South Africa",
+    "country_id": "1010"
   }
 }
