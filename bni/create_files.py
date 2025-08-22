@@ -5,7 +5,16 @@ from sqlalchemy.orm import Session
 
 from bni.db.db import session
 from bni.model.data_model import Country, Member, Region, Chapter
-
+import re
+def sanitize_phone(number: str) -> str:
+    if bool(number):
+        # Keep only digits and +
+        cleaned = re.sub(r"[^0-9+]", "", number)
+        # Allow only leading +
+        if cleaned.startswith("+"):
+            return "+" + re.sub(r"\+", "", cleaned[1:])
+        else:
+            return re.sub(r"\+", "", cleaned)
 
 def export_members_to_excel_per_country(output_dir):
     """
@@ -55,7 +64,7 @@ def export_members_to_excel_per_country(output_dir):
                 country.country_name,
                 member.chapter.chapter_name if member.chapter else "",
                 member.name or "",
-                member.mobile or "",
+                sanitize_phone(member.mobile) or "",
                 member.email_urls or "",
                 member.phone or "",
                 member.company or "",
@@ -66,7 +75,7 @@ def export_members_to_excel_per_country(output_dir):
         # Save file
         file_path = os.path.join(output_dir, f"{country.country_code}.xlsx")
         wb.save(file_path)
-        print(f"✅ Saved {os.path.abspath(output_dir)}, File Name{file_path}")
+        print(f"✅ Saved {os.path.abspath(output_dir)}, File Name {file_path}")
 
 
 export_members_to_excel_per_country(output_dir="country_excels")

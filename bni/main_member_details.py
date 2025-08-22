@@ -17,7 +17,7 @@ def get_members_from_db():
             or_(Member.phone.is_(None), Member.phone == "")
         )
         .order_by(func.random())
-        .limit(50)
+        .limit(10)
         .all()
     )
 

@@ -38,5 +38,10 @@
     "country_url": "https://bni.com.sg/en-SG/",
     "country_name": "Singapore",
     "country_id": "7585"
+  },
+  "NZ": {
+    "country_url": "https://bni.co.nz/en-NZ/",
+    "country_name": "New Zealand",
+    "country_id": "18493"
   }
 }

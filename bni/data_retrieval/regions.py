@@ -19,7 +19,10 @@ def retrieve_region_options():
 
 
 def get_country_regions(country_url, country_code):
-    country_search_url = country_url + "advancedchaptersearch"
+    if country_code =="NZ":
+        country_search_url = country_url + "find-a-chapter#search"
+    else:
+        country_search_url = country_url + "advancedchaptersearch"
     driver.get(country_search_url)
     select_element = retrieve_region_options()
     dropdown = Select(select_element)
